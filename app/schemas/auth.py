@@ -33,6 +33,11 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
+class LoginRequest(BaseModel):
+    username: str  # OAuth2PasswordRequestForm uses 'username' field name (but we accept email)
+    password: str
+
+
 class Token(BaseModel):
     access_token: str
     refresh_token: str
