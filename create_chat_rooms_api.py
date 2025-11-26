@@ -8,8 +8,6 @@ import sys
 
 # Backend API URL
 BASE_URL = "http://localhost:8000/api/v1"
-# Or use Docker container URL if running in Docker:
-# BASE_URL = "http://localhost:8000/api/v1"
 
 # Sample chat rooms to create
 SAMPLE_ROOMS = [
