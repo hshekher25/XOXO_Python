@@ -38,13 +38,15 @@ async def update_location(
     profile.longitude = location.longitude
     db.commit()
     
-    # Update Redis for presence
-    redis_key = f"user:location:{current_user.id}"
-    redis_client.setex(
-        redis_key,
-        3600,  # 1 hour TTL
-        f"{location.latitude},{location.longitude}",
-    )
+    # Update Redis for presence (optional)
+    from app.core.redis_client import is_redis_available, redis_client
+    if is_redis_available() and redis_client:
+        redis_key = f"user:location:{current_user.id}"
+        redis_client.setex(
+            redis_key,
+            3600,  # 1 hour TTL
+            f"{location.latitude},{location.longitude}",
+        )
     
     return {"message": "Location updated"}
 

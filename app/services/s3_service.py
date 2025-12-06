@@ -7,6 +7,8 @@ import uuid
 
 class S3Service:
     def __init__(self):
+        if not settings.S3_ENDPOINT_URL:
+            raise ValueError("S3_ENDPOINT_URL is not configured. Photo uploads are disabled.")
         self.s3_client = boto3.client(
             "s3",
             endpoint_url=settings.S3_ENDPOINT_URL,

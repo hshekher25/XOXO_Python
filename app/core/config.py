@@ -21,11 +21,11 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
-    # Redis
-    REDIS_URL: str = "redis://localhost:6379"
+    # Redis (optional - leave empty to disable)
+    REDIS_URL: Optional[str] = None
     
-    # S3/MinIO
-    S3_ENDPOINT_URL: Optional[str] = "http://localhost:9000"
+    # S3/MinIO (optional - leave empty to disable photo uploads)
+    S3_ENDPOINT_URL: Optional[str] = None
     S3_ACCESS_KEY: str = "minioadmin"
     S3_SECRET_KEY: str = "minioadmin"
     S3_BUCKET_NAME: str = "xoxo-images"

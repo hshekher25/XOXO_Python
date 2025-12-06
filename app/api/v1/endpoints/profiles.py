@@ -8,6 +8,7 @@ from app.models.profile import Profile
 from app.schemas.profile import ProfileCreate, ProfileUpdate, ProfileResponse
 from typing import Optional as TypingOptional
 from app.services.s3_service import S3Service
+from app.core.config import settings
 
 router = APIRouter()
 
@@ -125,15 +126,28 @@ async def upload_photo(
             detail="Profile not found",
         )
     
-    s3_service = S3Service()
-    photo_url = await s3_service.upload_file(file, f"profiles/{current_user.id}/")
+    # Check if S3 is configured
+    if not settings.S3_ENDPOINT_URL:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Photo upload service is not configured. Please configure S3_ENDPOINT_URL in .env file.",
+        )
     
-    if not profile.photos:
-        profile.photos = []
-    profile.photos.append(photo_url)
-    db.commit()
-    db.refresh(profile)
-    return profile
+    try:
+        s3_service = S3Service()
+        photo_url = await s3_service.upload_file(file, f"profiles/{current_user.id}/")
+        
+        if not profile.photos:
+            profile.photos = []
+        profile.photos.append(photo_url)
+        db.commit()
+        db.refresh(profile)
+        return profile
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(e),
+        )
 
 
 @router.get("/discover", response_model=List[ProfileResponse])
