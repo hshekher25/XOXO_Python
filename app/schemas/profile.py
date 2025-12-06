@@ -42,16 +42,20 @@ class ProfileResponse(BaseModel):
     user_id: str
     name: str
     age: int
-    bio: Optional[str]
+    bio: Optional[str] = None
     gender: str
     gender_preference: str
-    photos: List[str]
-    latitude: Optional[float]
-    longitude: Optional[float]
-    max_distance_km: int
-    is_active: bool
+    photos: List[str] = []
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    max_distance_km: int = 50
+    is_active: bool = True
     created_at: datetime
 
     class Config:
         from_attributes = True
+        # Support both snake_case (API) and camelCase (Android) via serialization
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
 
